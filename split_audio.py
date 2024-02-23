@@ -1,9 +1,19 @@
 import subprocess
 import shutil
+import os
 
 # aubioonset -i audio.wav > onset.txt
 
 i = 1
+
+with open("onset.txt", "r") as onset_file:
+    head = [next(onset_file) for _ in range(2)]
+    start = float(head[0].strip())
+    end = float(head[1].strip())
+    duration = round(end-start)-0.5
+    print(duration)
+
+os.makedirs("output", exist_ok=True)
 
 with open("onset.txt", "r") as onset_file:
     for onset in onset_file:
@@ -12,12 +22,12 @@ with open("onset.txt", "r") as onset_file:
 
         print(f"Splitting at {start_time}")
 
-        subprocess.run(["sox", "audio.wav", "tmp1.wav", "trim", start_time, "18"])
+        subprocess.run(["sox", "audio.wav", os.path.join("output", "tmp1.wav"), "trim", start_time, str(duration)])
         subprocess.run(
             [
                 "sox",
-                "tmp1.wav",
-                "tmp2.wav",
+                os.path.join("output", "tmp1.wav"),
+                os.path.join("output", "tmp2.wav"),
                 "silence",
                 "1",
                 "0.0",
@@ -33,13 +43,13 @@ with open("onset.txt", "r") as onset_file:
                 "0.5",
             ]
         )
-        subprocess.run(["rm", "-rf", "tmp1.wav"])
+        subprocess.run(["rm", "-rf", os.path.join("output", "tmp1.wav")])
         subprocess.run(
-            ["sox", "tmp2.wav", "-b", "16", "-r", "48000", "-c", "2", "tmp3.wav"]
+            ["sox", os.path.join("output", "tmp2.wav"), "-b", "16", "-r", "48000", "-c", "2", os.path.join("output", "tmp3.wav")]
         )
-        subprocess.run(["rm", "-rf", "tmp2.wav"])
-        subprocess.run(["mv", "tmp3.wav", f"output_{formatted_i}.wav"])
-        subprocess.run(["rm", "-rf", "tmp3.wav"])
+        subprocess.run(["rm", "-rf", os.path.join("output", "tmp2.wav")])
+        subprocess.run(["mv", os.path.join("output", "tmp3.wav"), os.path.join("output", f"output_{formatted_i}.wav")])
+        subprocess.run(["rm", "-rf", os.path.join("output", "tmp3.wav")])
 
         i += 1
 
@@ -50,12 +60,9 @@ all_instr = [
     "Hat edge open",
     "Hat top closed",
     "Hat top open",
-    "High crash",
-    "Med crash",
-    "Low crash",
+    "Crash",
     "Floor tom",
-    "Lo tom",
-    "Hi tom",
+    "Rack tom",
     "Ride edge",
     "Ride",
     "Ride bell",
@@ -68,8 +75,16 @@ for t in all_instr:
 
     i += 1
     formatted_i = f"{i:02}"
-    shutil.move(f"output_{formatted_i}.wav", f"{t} loud.wav")
+    shutil.move(os.path.join("output", f"output_{formatted_i}.wav"), os.path.join("output", f"{t} 4.wav"))
 
     i += 1
     formatted_i = f"{i:02}"
-    shutil.move(f"output_{formatted_i}.wav", f"{t} quiet.wav")
+    shutil.move(os.path.join("output", f"output_{formatted_i}.wav"), os.path.join("output", f"{t} 3.wav"))
+
+    i += 1
+    formatted_i = f"{i:02}"
+    shutil.move(os.path.join("output", f"output_{formatted_i}.wav"), os.path.join("output", f"{t} 2.wav"))
+
+    i += 1
+    formatted_i = f"{i:02}"
+    shutil.move(os.path.join("output", f"output_{formatted_i}.wav"), os.path.join("output", f"{t} 1.wav"))
