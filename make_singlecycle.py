@@ -34,7 +34,7 @@ def write_one_file(dirpath: str, one_file: str):
         f.write('        type="wavetable"\n')
         f.write('        transpose="0"\n')
         f.write('        cents="0"\n')
-        f.write('        retrigPhase="-1"\n')
+        f.write('        retrigPhase="0"\n')
         f.write(f'        fileName="{new_dirpath}/{one_file}" />\n')
         f.write("    <osc2\n")
         f.write('        type="square"\n')
@@ -58,7 +58,7 @@ def write_one_file(dirpath: str, one_file: str):
         f.write('        compressorShape="0xDC28F5B2"\n')
         f.write('        oscAVolume="0x1999997E"\n')
         f.write('        oscAPulseWidth="0x00000000"\n')
-        f.write('        oscAWavetablePosition="0x00000000"\n')
+        f.write('        oscAWavetablePosition="0x04000000"\n')
         f.write('        oscBVolume="0x80000000"\n')
         f.write('        oscBPulseWidth="0x00000000"\n')
         f.write('        oscBWavetablePosition="0x00000000"\n')
@@ -111,6 +111,10 @@ def write_one_file(dirpath: str, one_file: str):
         f.write('                source="y"\n')
         f.write('                destination="lpfFrequency"\n')
         f.write('                amount="0x19999990" />\n')
+        f.write("            <patchCable\n")
+        f.write('                source="lfo2"\n')
+        f.write('                destination="oscAWavetablePosition"\n')
+        f.write('                amount="0x13800000" />\n')
         f.write("        </patchCables>\n")
         f.write("        <equalizer\n")
         f.write('            bass="0x00000000"\n')
@@ -154,7 +158,7 @@ def process_folder(path: str) -> None:
 
     print(f"Processing: {name}")
 
-    for dirpath, dirs, files in os.walk(path):
+    for dirpath, _, files in os.walk(path):
         print(dirpath)
         for one_file in files:
             if not one_file.endswith("wav"):
@@ -164,7 +168,8 @@ def process_folder(path: str) -> None:
 
 if __name__ == "__main__":
     path = [
-        "/media/blablack/2AE1-855C/SAMPLES/MyStuff/AKWF",
+        "/media/blablack/15BC-5006/SAMPLES/MyStuff/WaveTables",
+        # "/media/blablack/15BC-5006/SAMPLES/MyStuff/Echo Sound Works Core Tables",
     ]
 
     for one_path in path:
