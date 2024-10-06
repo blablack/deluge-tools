@@ -377,18 +377,37 @@ def generate_xml(sample_list: [SampleFile]) -> str:
     etree.SubElement(modKnobs, "modKnob", controlsParam="bitcrushAmount")
     etree.SubElement(modKnobs, "modKnob", controlsParam="sampleRateReduction")
 
-    return etree.tostring(
+    final_string = etree.tostring(
         sound, xml_declaration=True, encoding="UTF-8", pretty_print=True
     )
 
+    final_string = final_string.replace(b"&amp;", b"&")
+
+    return final_string
+
 
 def generate_synth(root_dir: SampleFolder) -> str:
+    files_to_use = 20
+
     sample_list = [
         SampleFile(root_dir.path, o, root_dir.regex_type)
         for o in os.listdir(root_dir.path)
     ]
 
     sample_list.sort(key=lambda x: (x.octave, x.note_digit))
+
+    file_count = len(sample_list)
+    if file_count > files_to_use:
+        modulo_calc = round(file_count / 20)
+
+        new_list = []
+        i = 0
+        for o in sample_list:
+            if i % modulo_calc == 0:
+                new_list.append(o)
+            i += 1
+
+        sample_list = new_list
 
     return generate_xml(sample_list)
 
@@ -441,11 +460,8 @@ def process_folder(path: str) -> None:
 
 if __name__ == "__main__":
     path = [
-        # "/media/blablack/2AE1-855C/SAMPLES/MyStuff/Samples from Mars/Synths",
-        # "/home/blablack/ZGarbage/SAMPLES/MyStuff/Wave Alchemy - Essence/Bass/Decayed",
-        # "/home/blablack/ZGarbage/SAMPLES/MyStuff/Wave Alchemy - Essence/Bass/Sustained",
-        # "/home/blablack/ZGarbage/SAMPLES/MyStuff/Wave Alchemy - Essence/Midnight Drive",
-        "/home/blablack/ZGarbage/SAMPLES/MyStuff/Samples from Mars/Synths",
+        "/media/blablack/2AE1-855C/SAMPLES/MyStuff/Wave Alchemy - Essence/Midnight Drive",
+        "/media/blablack/2AE1-855C/SAMPLES/MyStuff/Samples from Mars/Synths",
     ]
 
     for one_path in path:
