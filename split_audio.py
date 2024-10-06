@@ -5,14 +5,23 @@ import shutil
 
 i = 1
 
-with open("onset.txt", "r") as onset_file:
+with open("/home/blablack/ZGarbage/onset.txt", "r") as onset_file:
     for onset in onset_file:
         start_time = onset.strip()
         formatted_i = f"{i:02}"
 
         print(f"Splitting at {start_time}")
 
-        subprocess.run(["sox", "audio.wav", "tmp1.wav", "trim", start_time, "18"])
+        subprocess.run(
+            [
+                "sox",
+                "/home/blablack/ZGarbage/Audio.wav",
+                "tmp1.wav",
+                "trim",
+                start_time,
+                "18",
+            ]
+        )
         subprocess.run(
             [
                 "sox",
@@ -68,8 +77,16 @@ for t in all_instr:
 
     i += 1
     formatted_i = f"{i:02}"
-    shutil.move(f"output_{formatted_i}.wav", f"{t} loud.wav")
+    shutil.move(f"output_{formatted_i}.wav", f"{t} 4.wav")
 
     i += 1
     formatted_i = f"{i:02}"
-    shutil.move(f"output_{formatted_i}.wav", f"{t} quiet.wav")
+    shutil.move(f"output_{formatted_i}.wav", f"{t} 3.wav")
+
+    i += 1
+    formatted_i = f"{i:02}"
+    shutil.move(f"output_{formatted_i}.wav", f"{t} 2.wav")
+
+    i += 1
+    formatted_i = f"{i:02}"
+    shutil.move(f"output_{formatted_i}.wav", f"{t} 1.wav")
