@@ -7,7 +7,7 @@ from lxml import etree
 from tqdm import tqdm
 
 
-def check_for_one_regex(wav_files: [str], regex_pattern: str) -> bool:
+def check_for_one_regex(wav_files: list[str], regex_pattern: str) -> bool:
     if not wav_files:
         return False
 
@@ -19,7 +19,7 @@ def check_for_one_regex(wav_files: [str], regex_pattern: str) -> bool:
     return True
 
 
-def check_if_folder_is_synth(wav_files: [str]) -> bool:
+def check_if_folder_is_synth(wav_files: list[str]) -> bool:
     if not wav_files:
         return False
 
@@ -59,7 +59,7 @@ def clean_and_format_string(input_string: str) -> str:
     return formatted_string
 
 
-def list_paths(root_dir: str) -> [str]:
+def list_paths(root_dir: str) -> list[str]:
     print(f"Find all synths...")
     folders_with_wav_files = []
     ignored_folders = []
@@ -189,7 +189,7 @@ class SampleFile:
         return (rangeTopNote, 60 - rangeTopNote)
 
 
-def generate_xml(sample_list: [SampleFile]) -> str:
+def generate_xml(sample_list: list[SampleFile]) -> str:
     sound = etree.Element(
         "sound",
         firmwareVersion="4.1.3",
@@ -434,7 +434,7 @@ def write_xml(xml_string: str, synth_path: str, root_path: str) -> None:
         f.write(xml_string)
 
 
-def generate_all_synths(found_synths_path: [SampleFolder], path: str) -> None:
+def generate_all_synths(found_synths_path: list[SampleFolder], path: str) -> None:
     print(f"Write all synths XML...")
 
     with tqdm(total=len(found_synths_path)) as pbar:
@@ -460,8 +460,7 @@ def process_folder(path: str) -> None:
 
 if __name__ == "__main__":
     path = [
-        "/media/blablack/2AE1-855C/SAMPLES/MyStuff/Wave Alchemy - Essence/Midnight Drive",
-        "/media/blablack/2AE1-855C/SAMPLES/MyStuff/Samples from Mars/Synths",
+        "/media/blablack/15BC-5006/SAMPLES/MyStuff/Samples from Mars/Synths/junos_from_mars",
     ]
 
     for one_path in path:
